@@ -1,0 +1,145 @@
+
+.message {
+    // custom
+    .emoji {
+        width: 28px;
+        height: 28px;
+    }
+
+    margin-bottom: 16px;
+    float: left;
+    width: 100%;
+    &.me {
+        float: right;
+        text-align: right;
+        clear: right;
+        .content {
+            overflow: hidden;
+        }
+        .avatar {
+            float: right;
+        }
+    }
+    .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 2px;
+        -moz-border-radius: 2px;
+        -webkit-border-radius: 2px;
+        float: left;
+        cursor: pointer;
+    }
+    .content {
+        overflow: hidden;
+    }
+}
+
+.message_system {
+    text-align: center;
+    margin: 10px auto;
+    max-width: 50%;
+    .content {
+        display: inline-block;
+        background-color: #dcdcdc;
+        font-size: 12px;
+        padding: 1px 18px;
+        color: #fff;
+        border-radius: 2px;
+        -moz-border-radius: 2px;
+        -webkit-border-radius: 2px;
+    }
+}
+
+.bubble {
+    max-width: 500px;
+    min-height: 1em;
+    display: inline-block;
+    vertical-align: top;
+    position: relative;
+    text-align: left;
+    font-size: 14px;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    margin: 0 10px;
+
+    &.bubble_default {
+        background-color: #fff;
+    }
+
+    &.bubble_primary {
+        background-color: #b2e281;
+        &.right:after {
+            border-left-color: #b2e281;
+            border-left-width: 4px;
+        }
+    }
+    &:before, &:after {
+        position: absolute;
+        top: 14px;
+        border: 6px solid transparent;
+        content: " ";
+    }
+
+    &.left:before, &.left:after {
+        right: 100%;
+    }
+
+    &.left:after {
+        border-right-color: #FFF;
+        border-right-width: 4px;
+    }
+
+    &.right:before, &.right:after {
+        left: 100%;
+    }
+
+    &.right:after {
+        border-left-color: #FFF;
+    }
+}
+
+.bubble_cont {
+    word-wrap: break-word;
+    word-break: break-all;
+    min-height: 25px;
+
+    .plain {
+        padding: 9px 13px;
+        .ico_loading {
+            position: absolute;
+            right: 100%;
+            top: 50%;
+            margin-top: -7px;
+            margin-right: 13px;
+        }
+        .ico_fail {
+            position: absolute;
+            right: 100%;
+            top: 50%;
+            margin-top: -11px;
+            margin-right: 9px;
+            cursor: pointer;
+        }
+    }
+
+    .picture {
+        border-radius: 4px;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        overflow: hidden;
+        position: relative;
+
+        img {
+            display: block;
+            cursor: pointer;
+            max-width: 350px;
+            max-height: 240px;
+        }
+    }
+
+    img {
+        vertical-align: middle;
+    }
+
+}

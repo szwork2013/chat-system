@@ -1,42 +1,27 @@
-var PORT = 3000;
+var webpack = require('webpack')
+var webpackDevMiddleware = require('webpack-dev-middleware')
+var webpackHotMiddleware = require('webpack-hot-middleware')
+var config = require('./webpack.dev')
 
-var http = require('http');
-var url = require('url');
-var fs = require('fs');
-var mine = require('./mine').types;
-var path = require('path');
+var express = require('express')
 
-var server = http.createServer(function(request, response) {
-    var pathname = url.parse(request.url).pathname;
-    var realPath = path.join("E:/chat/", pathname);
-    var ext = path.extname(realPath);
-    ext = ext ? ext.slice(1) : 'unknown';
-    fs.exists(realPath, function(exists) {
-        if (!exists) {
-            response.writeHead(404, {
-                'Content-Type': 'text/plain'
-            });
+// var configController = require('./z-controller')
 
-            response.write("This request URL " + pathname + " was not found on this server.");
-            response.end();
-        } else {
-            fs.readFile(realPath, "binary", function(err, file) {
-                if (err) {
-                    response.writeHead(500, {
-                        'Content-Type': 'text/plain'
-                    });
-                    response.end(err);
-                } else {
-                    var contentType = mine[ext] || "text/plain";
-                    response.writeHead(200, {
-                        'Content-Type': contentType
-                    });
-                    response.write(file, "binary");
-                    response.end();
-                }
-            });
-        }
-    });
-});
-server.listen(PORT);
-console.log("Server runing at port: " + PORT + ".");
+var app = new express()
+var port = 3000
+
+var compiler = webpack(config)
+app.use(webpackDevMiddleware(compiler, {noInfo: true, publicPath: config.output.publicPath}))
+app.use(webpackHotMiddleware(compiler))
+
+app.use(express.static('./'))
+
+// configController(app)
+
+app.listen(port, function (error) {
+    if (error) {
+        console.error(error)
+    } else {
+        console.info("==> 🌎  Listening on port %s. Open up http://localhost:%s/ in your browser.", port, port)
+    }
+})
