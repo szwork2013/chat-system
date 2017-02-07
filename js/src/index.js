@@ -23,15 +23,15 @@ import '../../css/index.scss'
 
 let username = util.getSession('username')
 let initState = {
-    curUserId: '',
-    patients: [],
-    rooms: [],
-    doctors: [],
-    members: [],
-    singleMessage: [],
-    roomMessage: [],
-    historyMessage: [],
-    chatList: []
+  curUserId: '',
+  patients: [],
+  rooms: [],
+  doctors: [],
+  members: [],
+  singleMessage: [],
+  roomMessage: [],
+  historyMessage: [],
+  chatList: []
 }
 
 let store = configureStore(initState)
@@ -39,5 +39,5 @@ let history = syncHistoryWithStore(hashHistory, store)
 store.dispatch({type: actionConstants.app.INIT_SYSTEM, username})
 
 render(
-    <Root store={store} history={history}/>, document.getElementById('container')
+  <Root store={store} history={history}/>, document.getElementById('container')
 )

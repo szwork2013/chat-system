@@ -8,21 +8,21 @@ import rootReducer from '../reducers'
 import DevTools from '../container/DevTools'
 
 export default function configureStore(preloadedState) {
-    const store = createStore(
-        rootReducer,
-        preloadedState,
-        compose(
-            applyMiddleware(thunk, extraData, sessionStorageState),
-            DevTools.instrument()
-        )
+  const store = createStore(
+    rootReducer,
+    preloadedState,
+    compose(
+      applyMiddleware(thunk, extraData, sessionStorageState),
+      DevTools.instrument()
     )
+  )
 
-    if (module.hot) {
-        module.hot.accept('../reducers', () => {
-            const nextRootReducer = require('../reducers').default
-            store.replaceReducer(nextRootReducer)
-        })
-    }
+  if (module.hot) {
+    module.hot.accept('../reducers', () => {
+      const nextRootReducer = require('../reducers').default
+      store.replaceReducer(nextRootReducer)
+    })
+  }
 
-    return store
+  return store
 }

@@ -16,15 +16,15 @@ import * as roomMessage from './roomMessage'
 import * as historyMessage from './historyMessage'
 
 export default combineReducers({
-    ...login,
-    ...patients,
-    ...rooms,
-    ...doctor,
-    ...members,
-    ...app,
-    ...singleMessage,
-    ...roomMessage,
-    ...historyMessage,
-    chatList,
-    routing
+  ...login,
+  ...patients,
+  ...rooms,
+  ...doctor,
+  ...members,
+  ...app,
+  ...singleMessage,
+  ...roomMessage,
+  ...historyMessage,
+  chatList,
+  routing
 })

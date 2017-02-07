@@ -6,39 +6,39 @@ import {Map, List, fromJS} from 'immutable'
 import actionConstants from '../actions/actionConstants'
 
 export function historyMessage(state = [], action) {
-    const iState = fromJS(state)
+  const iState = fromJS(state)
 
-    return nextState()
+  return nextState()
 
-    function nextState() {
-        let nextIState = iState
-        switch (action.type) {
+  function nextState() {
+    let nextIState = iState
+    switch (action.type) {
 
-            case actionConstants.chat.START_SINGLE_CHAT:
-                nextIState = startSingleChat()
-                break
+      case actionConstants.chat.START_SINGLE_CHAT:
+        nextIState = startSingleChat()
+        break
 
-            case actionConstants.message.FETCH_HISTORY_MESSAGE_SUCCESS:
-                nextIState = fetchHistoryMessageSuccess()
-                break
+      case actionConstants.message.FETCH_HISTORY_MESSAGE_SUCCESS:
+        nextIState = fetchHistoryMessageSuccess()
+        break
 
-            default:
-                break
-        }
-        if (nextIState == iState) {
-            return state
-        }
-        return nextIState.toJS()
+      default:
+        break
     }
-
-
-    //---------------------------------------
-
-    function startSingleChat() {
-        return fromJS([])
+    if (nextIState == iState) {
+      return state
     }
+    return nextIState.toJS()
+  }
 
-    function fetchHistoryMessageSuccess() {
-        return fromJS(action.historyMessages)
-    }
+
+  //---------------------------------------
+
+  function startSingleChat() {
+    return fromJS([])
+  }
+
+  function fetchHistoryMessageSuccess() {
+    return fromJS(action.historyMessages)
+  }
 }

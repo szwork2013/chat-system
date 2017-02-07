@@ -6,8 +6,8 @@ import {merge} from 'lodash'
 import ListComponent from './ListComponent'
 
 export default class SimpleListComponent extends ListComponent {
-    constructor(props) {
-        super(props)
-        this.state = this.getState()
-    }
+  constructor(props) {
+    super(props)
+    this.state = this.getState()
+  }
 }

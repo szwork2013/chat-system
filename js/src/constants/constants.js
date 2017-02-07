@@ -3,6 +3,6 @@
  */
 
 export let loadMore = {
-    init: 10,
-    increase: 10
+  init: 10,
+  increase: 10
 }

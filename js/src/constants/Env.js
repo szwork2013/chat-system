@@ -6,10 +6,10 @@
 const phase = 'release'
 
 export default {
-    isDev: function isDev() {
-        return phase == 'dev'
-    },
-    isRelease: function isRelease() {
-        return phase == 'release'
-    }
+  isDev: function isDev() {
+    return phase == 'dev'
+  },
+  isRelease: function isRelease() {
+    return phase == 'release'
+  }
 }
