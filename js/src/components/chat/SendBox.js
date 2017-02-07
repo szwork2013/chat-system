@@ -4,6 +4,7 @@
 import React, {Component, PropTypes} from 'react'
 import {events} from 'dom-helpers'
 
+import Dropdown from '../tools/dropdown/Dropdown'
 import webImUtil from '../../core/utils/webImUtil'
 import Emoji from './toolbar/Emoji'
 import {ChatType} from '../../constants/ChatConstants'
@@ -63,6 +64,10 @@ class SendBox extends Component {
     e.preventDefault()
   }
 
+  openOtherCustomerServiceHistory = (customerServiceId) => {
+    this.props.openOtherCustomerServiceHistory(customerServiceId)
+  }
+
   componentDidMount() {
     events.on(this.preDom, 'keydown', this.handlePreKeyDown)
   }
@@ -91,9 +96,19 @@ class SendBox extends Component {
               </a>
             )
           }
+          <Dropdown className="other-bkkf-history" onChange={this.openOtherCustomerServiceHistory}>
+            <Dropdown.MenuItem value="bkkf1" title="贝壳客服1"/>
+            <Dropdown.MenuItem value="bkkf2" title="贝壳客服2"/>
+            <Dropdown.MenuItem value="bkkf3" title="贝壳客服3"/>
+          </Dropdown>
         </div>
         <div className="content">
-          <pre ref={c => this.preDom = c} contentEditable="true" className="flex edit_area" onPaste={e => this.handlePrePaste(e)}></pre>
+          <pre ref={c => this.preDom = c}
+               contentEditable="true"
+               className="flex edit_area"
+               style={{width: '100%'}}
+               onPaste={e => this.handlePrePaste(e)}>
+          </pre>
         </div>
         <div className="action">
           <a className="btn btn_send" onClick={e => this.sendText()} href="javascript:">发送</a>
@@ -110,7 +125,8 @@ SendBox.propTypes = {
   chatType: PropTypes.oneOf([ChatType.CHAT, ChatType.GROUP_CHAT]),
   sendText: PropTypes.func,
   sendPicture: PropTypes.func,
-  toggleHistoryMessage: PropTypes.func
+  toggleHistoryMessage: PropTypes.func,
+  openOtherCustomerServiceHistory: PropTypes.func
 }
 
 export default SendBox

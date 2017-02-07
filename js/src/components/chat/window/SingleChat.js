@@ -34,6 +34,11 @@ class SingleChat extends Component {
     this.setState({showHistory: !this.state.showHistory})
   }
 
+  openOtherCustomerServiceHistory = (customerServiceId) => {
+    this.props.fetchHistoryMessage(customerServiceId, this.props.curUserId)
+    this.setState({showHistory: true})
+  }
+
   componentDidMount() {
     this._scrollToBottom()
 
@@ -106,7 +111,8 @@ class SingleChat extends Component {
                  sendText={this.sendText}
                  sendPicture={this.sendPicture}
                  chatType={convertChat.chatType}
-                 toggleHistoryMessage={this.toggleHistoryMessage}/>
+                 toggleHistoryMessage={this.toggleHistoryMessage}
+                 openOtherCustomerServiceHistory={this.openOtherCustomerServiceHistory}/>
       </div>
     )
   }

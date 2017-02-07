@@ -8,7 +8,7 @@ import SingleChat from './window/SingleChat'
 import RoomChat from './window/RoomChat'
 import {ChatType} from '../../constants/ChatConstants'
 import busHelper from '../../core/busHelper'
-import {sendTextMessage, sendImageMessage, sendAudioMessage} from '../../actions/chat'
+import {sendTextMessage, sendImageMessage, sendAudioMessage, fetchHistoryMessage} from '../../actions/chat'
 
 class ChatPanel extends Component {
   render() {
@@ -47,5 +47,6 @@ function mapStateToProps(state, ownProps) {
 export default connect(mapStateToProps, {
   sendText: sendTextMessage,
   sendPicture: sendImageMessage,
-  sendAudio: sendAudioMessage
+  sendAudio: sendAudioMessage,
+  fetchHistoryMessage: fetchHistoryMessage
 })(ChatPanel)

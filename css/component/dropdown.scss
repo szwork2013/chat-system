@@ -1,0 +1,26 @@
+.dropdown {
+    .dropdown-btn {
+        cursor: pointer;
+        padding: 4px 10px;
+        border: 1px solid #aaa;
+        border-radius: 4px;
+        background-color: white;
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        left: 0;
+        right: 0;
+        border: 1px solid #aaa;
+        border-top: 0;
+        .menu-item {
+            cursor: pointer;
+            padding: 5px 0;
+            text-align: center;
+            &:not(:last-child) {
+                border-bottom: 1px solid #aaa;
+            }
+        }
+    }
+
+}

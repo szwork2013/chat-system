@@ -110,6 +110,25 @@ export let startSingleChat = dispatch => (from, to, isSort) => {
   })
 }
 
+export function fetchHistoryMessage(from, to) {
+  function _fetchSuccess(result) {
+    return {
+      type: actionConstants.message.FETCH_HISTORY_MESSAGE_SUCCESS,
+      historyMessages: result
+    }
+  }
+
+  function _fetchFailure(err) {
+    return {
+      type: actionConstants.message.FETCH_HISTORY_MESSAGE_FAILURE, err
+    }
+  }
+
+  return dispatch => {
+    chatService.fetchHistoryMessage(from, to).then(result => dispatch(_fetchSuccess(result)), err => dispatch(_fetchFailure(err)))
+  }
+}
+
 export function startRoomChat(roomId, isSort) {
   return dispatch => {
     conn.queryRoomMember(roomId).then(result => {
@@ -146,7 +165,7 @@ export function exitChatSystem() {
 
 export function sendTextMessage(from, to, chatType, content) {
   if (chatType == ChatType.CHAT) {
-    let textContent = conn.sendTextMessage({type: chatType, to: to, txt: content})
+    conn.sendTextMessage({type: chatType, to: to, txt: content})
     return {
       type: actionConstants.SEND_TEXT_MESSAGE,
       from,
