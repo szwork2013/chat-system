@@ -64,10 +64,6 @@ class SendBox extends Component {
     e.preventDefault()
   }
 
-  openOtherCustomerServiceHistory = (customerServiceId) => {
-    this.props.openOtherCustomerServiceHistory(customerServiceId)
-  }
-
   componentDidMount() {
     events.on(this.preDom, 'keydown', this.handlePreKeyDown)
   }
@@ -96,7 +92,10 @@ class SendBox extends Component {
               </a>
             )
           }
-          <Dropdown className="other-bkkf-history" onChange={this.openOtherCustomerServiceHistory}>
+          <Dropdown className="other-bkkf-history"
+                    onChange={CSId => this.props.openOtherCSHistory(CSId)}
+                    onClear={this.props.closeCSHistoryMessageBox}
+          >
             <Dropdown.MenuItem value="bkkf1" title="贝壳客服1"/>
             <Dropdown.MenuItem value="bkkf2" title="贝壳客服2"/>
             <Dropdown.MenuItem value="bkkf3" title="贝壳客服3"/>
@@ -126,7 +125,8 @@ SendBox.propTypes = {
   sendText: PropTypes.func,
   sendPicture: PropTypes.func,
   toggleHistoryMessage: PropTypes.func,
-  openOtherCustomerServiceHistory: PropTypes.func
+  openOtherCSHistory: PropTypes.func,
+  closeCSHistoryMessageBox: PropTypes.func
 }
 
 export default SendBox

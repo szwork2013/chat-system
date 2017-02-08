@@ -14,6 +14,7 @@ import * as members from './list/members'
 import * as singleMessage from './singleMessage'
 import * as roomMessage from './roomMessage'
 import * as historyMessage from './historyMessage'
+import * as csHistoryMessage from './csHistoryMessage'
 
 export default combineReducers({
   ...login,
@@ -25,6 +26,7 @@ export default combineReducers({
   ...singleMessage,
   ...roomMessage,
   ...historyMessage,
+  ...csHistoryMessage,
   chatList,
   routing
 })

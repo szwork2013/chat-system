@@ -110,17 +110,17 @@ export let startSingleChat = dispatch => (from, to, isSort) => {
   })
 }
 
-export function fetchHistoryMessage(from, to) {
+export function fetchCSHistoryMessage(from, to) {
   function _fetchSuccess(result) {
     return {
-      type: actionConstants.message.FETCH_HISTORY_MESSAGE_SUCCESS,
+      type: actionConstants.message.FETCH_CS_HISTORY_MESSAGE_SUCCESS,
       historyMessages: result
     }
   }
 
   function _fetchFailure(err) {
     return {
-      type: actionConstants.message.FETCH_HISTORY_MESSAGE_FAILURE, err
+      type: actionConstants.message.FETCH_CS_HISTORY_MESSAGE_FAILURE, err
     }
   }
 

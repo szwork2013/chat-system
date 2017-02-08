@@ -3,13 +3,14 @@
  */
 import React, {Component, PropTypes} from 'react'
 import classnames from 'classnames'
+import {events} from 'dom-helpers'
 
 import MenuItem from './MenuItem'
 
 class Dropdown extends Component {
   state = {
     show: false,
-    selected: '其他贝壳客服'
+    selected: ''
   }
 
   handleBtnClick = e => {
@@ -21,11 +22,41 @@ class Dropdown extends Component {
     this.props.onChange(value)
   }
 
+  handleDocumentClick = () => {
+    if (this.keep) {
+      this.keep = false
+      return
+    }
+    this.setState({show: false})
+  }
+
+  handleContainerClick = () => {
+    this.keep = true
+  }
+
+  clear = () => {
+    this.setState({show: false, selected: ''})
+    this.props.onClear()
+  }
+
+  componentDidMount() {
+    events.on(document, 'click', this.handleDocumentClick)
+  }
+
+  componentWillUnmount() {
+    events.off(document, 'click', this.handleDocumentClick)
+  }
+
   render() {
     return (
-      <div className={classnames('dropdown', this.props.className)}>
+      <div className={classnames('dropdown', this.props.className)} onClick={this.handleContainerClick}>
         <button className="dropdown-btn" onClick={this.handleBtnClick}>
-          {'与' + this.state.selected + '聊天记录'}
+          {'与 ' + (this.state.selected || '其他贝壳客服') + ' 聊天记录'}
+          {
+            this.state.selected && (
+              <i className="fa fa-lg fa-close" onClick={this.clear}></i>
+            )
+          }
         </button>
         {
           this.state.show && (
@@ -46,7 +77,8 @@ class Dropdown extends Component {
 }
 
 Dropdown.propTypes = {
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
+  onClear: PropTypes.func
 }
 
 Dropdown.childContextTypes = {

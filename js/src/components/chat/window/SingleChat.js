@@ -1,15 +1,16 @@
 /**
+ * CS short for customer service
  * Created by jiangyukun on 2016/11/16.
  */
-import React, {Component} from 'react'
+import React, {Component, PropTypes} from 'react'
 import {findDOMNode} from 'react-dom'
-import CssTransitionGroup from 'react-addons-css-transition-group'
 
-import Message from '../../message/Message'
+import CurrentChatMessage from './single/CurrentChatMessage'
+import HistoryMessage from './single/HistoryMessage'
 import SendBox from '../SendBox'
-import {MessageType, DIR} from '../../../constants/ChatConstants'
-import {fromNow} from '../../../core/utils/dateUtil'
-import huanxinUtils from '../../../core/utils/huanxinUtils'
+
+const SELF_HISTORY = 'SELF_HISTORY'
+const OTHER_CS_HISTORY = 'OTHER_CS_HISTORY'
 
 class SingleChat extends Component {
   constructor(props) {
@@ -17,7 +18,11 @@ class SingleChat extends Component {
     this.sendText = this.sendText.bind(this)
     this.sendPicture = this.sendPicture.bind(this)
     this.toggleHistoryMessage = this.toggleHistoryMessage.bind(this)
-    this.state = {showHistory: false}
+    this.historyStack = []
+    this.state = {
+      showHistory: false,
+      showOtherCSHistory: false
+    }
   }
 
   sendText(...args) {
@@ -31,12 +36,35 @@ class SingleChat extends Component {
   }
 
   toggleHistoryMessage() {
+    this._refreshHistoryStack(!this.state.showHistory, SELF_HISTORY)
     this.setState({showHistory: !this.state.showHistory})
   }
 
-  openOtherCustomerServiceHistory = (customerServiceId) => {
-    this.props.fetchHistoryMessage(customerServiceId, this.props.curUserId)
-    this.setState({showHistory: true})
+  // 判断历史消息和其他客服消息的上下顺序
+  _refreshHistoryStack(flag, historyType) {
+    if (flag) {
+      if (this.historyStack.indexOf(historyType) == -1) {
+        this.historyStack.push(historyType)
+      } else {
+        this.historyStack.splice(this.historyStack.indexOf(historyType), 1)
+        this.historyStack.push(historyType)
+      }
+    } else {
+      if (this.historyStack.indexOf(historyType) == -1) {
+        this.historyStack.splice(this.historyStack.indexOf(historyType), 1)
+      }
+    }
+  }
+
+  openOtherCSHistory = (customerServiceId) => {
+    this.props.fetchCSHistoryMessage(customerServiceId, this.props.curUserId)
+    this._refreshHistoryStack(true, OTHER_CS_HISTORY)
+    this.setState({showOtherCSHistory: true})
+  }
+
+  closeCSHistoryMessageBox = () => {
+    this._refreshHistoryStack(false, OTHER_CS_HISTORY)
+    this.setState({showOtherCSHistory: false})
   }
 
   componentDidMount() {
@@ -47,14 +75,14 @@ class SingleChat extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({showHistory: false})
     if (this.props.to != nextProps.to) {
+      this.setState({showHistory: false, showOtherCSHistory: false})
       this._scrollBottomFlag = true
     }
   }
 
   componentDidUpdate() {
-    if (this.state.showHistory) {
+    if (this.state.showHistory || this.state.showOtherCSHistory) {
       return
     }
     //切换联系人时
@@ -86,6 +114,10 @@ class SingleChat extends Component {
       return convertChat.nickname + ' (' + convertChat.id + ')'
     }
 
+    function getTitle() {
+
+    }
+
     return (
       <div className="box chat">
         <div className="box_hd">
@@ -100,11 +132,14 @@ class SingleChat extends Component {
         <CurrentChatMessage message={this.props.message}
                             curUserId={this.props.curUserId}
                             ref={c => this._currentChatMessage = c}/>
-        {
-          <HistoryMessage show={this.state.showHistory}
-                          curUserId={this.props.curUserId}
-                          historyMessage={this.props.historyMessage}/>
-        }
+
+        <HistoryMessage show={this.state.showHistory}
+                        curUserId={this.props.curUserId}
+                        historyMessage={this.props.historyMessage}/>
+
+        <HistoryMessage show={this.state.showOtherCSHistory}
+                        curUserId={this.props.curUserId}
+                        historyMessage={this.props.csHistoryMessage}/>
 
         <SendBox curUserId={this.props.curUserId}
                  to={this.props.to}
@@ -112,7 +147,8 @@ class SingleChat extends Component {
                  sendPicture={this.sendPicture}
                  chatType={convertChat.chatType}
                  toggleHistoryMessage={this.toggleHistoryMessage}
-                 openOtherCustomerServiceHistory={this.openOtherCustomerServiceHistory}/>
+                 openOtherCSHistory={this.openOtherCSHistory}
+                 closeCSHistoryMessageBox={this.closeCSHistoryMessageBox}/>
       </div>
     )
   }
@@ -122,131 +158,15 @@ class SingleChat extends Component {
   }
 }
 
+SingleChat.propTypes = {
+  sendText: PropTypes.func,
+  sendPicture: PropTypes.func,
+  curUserId: PropTypes.string,
+  to: PropTypes.string,
+  message: PropTypes.any,
+  historyMessage: PropTypes.array,
+  csHistoryMessage: PropTypes.array,
+  fetchCSHistoryMessage: PropTypes.func,
+}
+
 export default SingleChat
-
-class CurrentChatMessage extends Component {
-  render() {
-    const {message} = this.props
-    const empty = !message || ( message.reads.length == 0 && message.unreads.length == 0)
-    let lastChatTime = null
-
-    let showMessage = msg => {
-      const {id, from, chatTime, type, data} = msg
-      let convertData = data, convertChatTime = fromNow(chatTime)
-      let dir = from == this.props.curUserId ? DIR.RIGHT : DIR.LEFT
-      if (type == MessageType.TEXT) {
-        if (typeof data == 'string') {
-          convertData = huanxinUtils.parseTextMessage(data)
-        }
-      }
-      let showTime = true
-      if (lastChatTime == convertChatTime) {
-        showTime = false
-      }
-      lastChatTime = convertChatTime
-      return (
-        <div key={id}>
-          <div className="clearfix">
-            <div>
-              <Message from={from} dir={dir} chatTime={convertChatTime} msgType={type} data={convertData}
-                       showTime={showTime} pictureLoaded={() => this.scrollToBottom()}/>
-            </div>
-          </div>
-        </div>
-      )
-    }
-
-    return (
-      <div className="scroll-wrapper box_bd chat_bd scrollbar-dynamic">
-        <div className="box_bd chat_bd scrollbar-dynamic scroll-content" ref={c => this._container = c}>
-          {
-            !empty && (
-              <div ref={c => this._wrap = c}>
-                {message.reads.map(showMessage)}
-                {message.unreads.map(showMessage)}
-              </div>
-            )
-          }
-          {
-            empty && (
-              <div className="message_empty">
-                <p className="">暂时没有新消息</p>
-              </div>
-            )
-          }
-        </div>
-      </div>
-    )
-  }
-
-  //滚动到底部
-  scrollToBottom() {
-    if (!this._wrap) {
-      return
-    }
-    this._container.scrollTop = this._wrap.clientHeight - this._container.clientHeight
-  }
-}
-
-class HistoryMessage extends Component {
-  render() {
-    let {historyMessage} = this.props
-    let empty = !historyMessage || historyMessage.length == 0
-    let lastChatTime = null
-
-    let showMessage = msg => {
-      const {id, from, chatTime, type, data} = msg
-      let convertData = data, convertChatTime = fromNow(chatTime)
-      let dir = from == this.props.curUserId ? DIR.RIGHT : DIR.LEFT
-      if (type == MessageType.TEXT) {
-        if (typeof data == 'string') {
-          convertData = huanxinUtils.parseTextMessage(data)
-        }
-      }
-      let showTime = true
-      if (lastChatTime == convertChatTime) {
-        showTime = false
-      }
-      lastChatTime = convertChatTime
-      return (
-        <div key={id}>
-          <div className="clearfix">
-            <div>
-              <Message dir={dir} showTime={showTime} from={from}
-                       chatTime={convertChatTime}
-                       msgType={type}
-                       data={convertData}/>
-            </div>
-          </div>
-        </div>
-      )
-    }
-
-    return (
-      <CssTransitionGroup transitionName="slide-left" transitionEnterTimeout={400} transitionLeaveTimeout={400}>
-        {
-          this.props.show && (
-            <div className="scroll-wrapper box_bd chat_bd scrollbar-dynamic" style={{background: '#eaeaea'}}>
-              <div className="box_bd chat_bd scrollbar-dynamic scroll-content" ref={c => this._container = c}>
-                {
-                  !empty && (
-                    <div ref={c => this._wrap = c}>
-                      {this.props.historyMessage.map(showMessage)}
-                    </div>
-                  )
-                }
-                {
-                  empty && (
-                    <div className="message_empty">
-                      <p className="">无历史记录</p>
-                    </div>
-                  )
-                }
-              </div>
-            </div>
-          )
-        }
-      </CssTransitionGroup>
-    )
-  }
-}
