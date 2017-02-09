@@ -3,9 +3,11 @@
  */
 import React, {Component, PropTypes} from 'react'
 import {events} from 'dom-helpers'
+import classnames from 'classnames'
 
 import Dropdown from '../tools/dropdown/Dropdown'
 import webImUtil from '../../core/utils/webImUtil'
+import busHelper from '../../core/busHelper'
 import Emoji from './toolbar/Emoji'
 import {ChatType} from '../../constants/ChatConstants'
 
@@ -73,6 +75,11 @@ class SendBox extends Component {
   }
 
   render() {
+    const otherCSList = ['test0', 'test', 'test1', 'test2']
+    if (otherCSList.indexOf(this.props.curUserId) != -1) {
+      otherCSList.splice(otherCSList.indexOf(this.props.curUserId), 1)
+    }
+
     return (
       <div className="box_ft">
         <div className="toolbar">
@@ -87,19 +94,30 @@ class SendBox extends Component {
           </a>
           {
             this.props.toggleHistoryMessage && (
-              <a className="history_message" href="javascript:" onClick={e => this.props.toggleHistoryMessage()}>
-                <img className="history_message_icon" src="img/svg/history-message.svg"/>历史消息
+              <a href="javascript:" className={classnames('history_message', {'active': this.props.isShowHistory})}
+                 onClick={e => this.props.toggleHistoryMessage()}
+              >
+                <img className="history_message_icon" src="img/svg/history-message.svg"/>
+                <span className="txt">历史消息</span>
               </a>
             )
           }
-          <Dropdown className="other-bkkf-history"
-                    onChange={CSId => this.props.openOtherCSHistory(CSId)}
-                    onClear={this.props.closeCSHistoryMessageBox}
-          >
-            <Dropdown.MenuItem value="bkkf1" title="贝壳客服1"/>
-            <Dropdown.MenuItem value="bkkf2" title="贝壳客服2"/>
-            <Dropdown.MenuItem value="bkkf3" title="贝壳客服3"/>
-          </Dropdown>
+          {
+            this.props.curUserId.indexOf('test') != -1 && this.props.chatType == ChatType.CHAT && (
+              <Dropdown className="other-bkkf-history"
+                        onChange={CSId => this.props.openOtherCSHistory(CSId)}
+                        onClear={this.props.closeCSHistoryMessageBox}
+              >
+                {
+                  otherCSList.map(cs => {
+                    return (
+                      <Dropdown.MenuItem key={cs} value={cs} title={busHelper.getDisplayName(cs)}/>
+                    )
+                  })
+                }
+              </Dropdown>
+            )
+          }
         </div>
         <div className="content">
           <pre ref={c => this.preDom = c}
@@ -124,6 +142,7 @@ SendBox.propTypes = {
   chatType: PropTypes.oneOf([ChatType.CHAT, ChatType.GROUP_CHAT]),
   sendText: PropTypes.func,
   sendPicture: PropTypes.func,
+  isShowHistory: PropTypes.bool,
   toggleHistoryMessage: PropTypes.func,
   openOtherCSHistory: PropTypes.func,
   closeCSHistoryMessageBox: PropTypes.func

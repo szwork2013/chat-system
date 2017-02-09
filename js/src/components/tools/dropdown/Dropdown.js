@@ -34,9 +34,10 @@ class Dropdown extends Component {
     this.keep = true
   }
 
-  clear = () => {
+  clear = e => {
     this.setState({show: false, selected: ''})
     this.props.onClear()
+    e.stopPropagation()
   }
 
   componentDidMount() {

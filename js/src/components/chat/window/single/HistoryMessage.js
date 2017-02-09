@@ -44,7 +44,7 @@ class HistoryMessage extends Component {
     }
 
     return (
-      <CssTransitionGroup transitionName="slide-left" transitionEnterTimeout={400} transitionLeaveTimeout={400}>
+      <CssTransitionGroup transitionName="my-slide-left" transitionEnterTimeout={400} transitionLeaveTimeout={400}>
         {
           this.props.show && (
             <div className="scroll-wrapper box_bd chat_bd scrollbar-dynamic" style={{background: '#eaeaea'}}>

@@ -31,42 +31,42 @@
 
 //------ --------------------- ----------------
 
-.slide-down-enter {
+.my-slide-down-enter {
     transform: translateY(-60px);
     transition-duration: 250ms;
     opacity: 0;
-    &.slide-down-enter-active {
+    &.my-slide-down-enter-active {
         transform: translateY(0);
         opacity: 1;
     }
 }
 
-.slide-down-leave {
+.my-slide-down-leave {
     transform: translateY(0);
     transition-duration: 250ms;
     opacity: 1;
-    &.slide-down-leave-active {
+    &.my-slide-down-leave-active {
         transform: translateY(-60px);
         opacity: 0;
     }
 }
 
 //-------------------------------------------
-.slide-left-enter {
+.my-slide-left-enter {
     transform: translateX(720px);
     transition-duration: 400ms;
     opacity: 0.5;
-    &.slide-left-enter-active {
+    &.my-slide-left-enter-active {
         transform: translateX(0);
         opacity: 1;
     }
 }
 
-.slide-left-leave {
+.my-slide-left-leave {
     transform: translateX(0);
     transition-duration: 400ms;
     opacity: 1;
-    &.slide-left-leave-active {
+    &.my-slide-left-leave-active {
         transform: translateX(720px);
         opacity: 0.5;
     }

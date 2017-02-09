@@ -48,7 +48,7 @@ class RoomMembers extends Component {
 
   render() {
     return (
-      <CssTransitionGroup transitionName="slide-down" transitionEnterTimeout={250} transitionLeaveTimeout={250}>
+      <CssTransitionGroup transitionName="my-slide-down" transitionEnterTimeout={250} transitionLeaveTimeout={250}>
         {
           this.state.show && (
             <div className="mmpop members_wrp slide-down" tabIndex="-1">

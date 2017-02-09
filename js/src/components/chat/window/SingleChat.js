@@ -40,6 +40,18 @@ class SingleChat extends Component {
     this.setState({showHistory: !this.state.showHistory})
   }
 
+  openOtherCSHistory = (customerServiceId) => {
+    this.customerServiceId = customerServiceId
+    this.props.fetchCSHistoryMessage(customerServiceId, this.props.curUserId)
+    this._refreshHistoryStack(true, OTHER_CS_HISTORY)
+    this.setState({showOtherCSHistory: true})
+  }
+
+  closeCSHistoryMessageBox = () => {
+    this._refreshHistoryStack(false, OTHER_CS_HISTORY)
+    this.setState({showOtherCSHistory: false})
+  }
+
   // 判断历史消息和其他客服消息的上下顺序
   _refreshHistoryStack(flag, historyType) {
     if (flag) {
@@ -50,21 +62,10 @@ class SingleChat extends Component {
         this.historyStack.push(historyType)
       }
     } else {
-      if (this.historyStack.indexOf(historyType) == -1) {
+      if (this.historyStack.indexOf(historyType) != -1) {
         this.historyStack.splice(this.historyStack.indexOf(historyType), 1)
       }
     }
-  }
-
-  openOtherCSHistory = (customerServiceId) => {
-    this.props.fetchCSHistoryMessage(customerServiceId, this.props.curUserId)
-    this._refreshHistoryStack(true, OTHER_CS_HISTORY)
-    this.setState({showOtherCSHistory: true})
-  }
-
-  closeCSHistoryMessageBox = () => {
-    this._refreshHistoryStack(false, OTHER_CS_HISTORY)
-    this.setState({showOtherCSHistory: false})
   }
 
   componentDidMount() {
@@ -104,7 +105,7 @@ class SingleChat extends Component {
   render() {
     let {convertChat} = this.props
 
-    function getUserInfo(convertChat) {
+    const _getUserInfo = (convertChat) => {
       if (!convertChat.nickname) {
         return convertChat.id
       }
@@ -114,8 +115,15 @@ class SingleChat extends Component {
       return convertChat.nickname + ' (' + convertChat.id + ')'
     }
 
-    function getTitle() {
-
+    const _getTitle = () => {
+      if (this.historyStack.length == 0) {
+        return _getUserInfo(convertChat)
+      }
+      const historyType = this.historyStack[this.historyStack.length - 1]
+      if (historyType == SELF_HISTORY) {
+        return '与 ' + (convertChat.nickname || convertChat.id) + ' 的历史记录'
+      }
+      return this.customerServiceId + ' 与 ' + (convertChat.nickname || convertChat.id) + ' 的历史记录'
     }
 
     return (
@@ -123,8 +131,7 @@ class SingleChat extends Component {
         <div className="box_hd">
           <div className="title_wrap">
             <div className="title poi">
-              {!this.state.showHistory && <a className="title_name">{getUserInfo(convertChat)}</a>}
-              {this.state.showHistory && <a className="title_name">与 {convertChat.nickname || convertChat.id} 的历史记录</a>}
+              <a className="title_name">{_getTitle()}</a>
             </div>
           </div>
         </div>
@@ -146,6 +153,7 @@ class SingleChat extends Component {
                  sendText={this.sendText}
                  sendPicture={this.sendPicture}
                  chatType={convertChat.chatType}
+                 isShowHistory={this.state.showHistory}
                  toggleHistoryMessage={this.toggleHistoryMessage}
                  openOtherCSHistory={this.openOtherCSHistory}
                  closeCSHistoryMessageBox={this.closeCSHistoryMessageBox}/>
