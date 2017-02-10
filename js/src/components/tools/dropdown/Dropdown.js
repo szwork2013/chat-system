@@ -13,6 +13,10 @@ class Dropdown extends Component {
     selected: ''
   }
 
+  close() {
+    this.setState({show: false, selected: ''})
+  }
+
   handleBtnClick = e => {
     this.setState({show: !this.state.show})
   }
@@ -50,12 +54,18 @@ class Dropdown extends Component {
 
   render() {
     return (
-      <div className={classnames('dropdown', this.props.className)} onClick={this.handleContainerClick}>
-        <button className="dropdown-btn" onClick={this.handleBtnClick}>
-          {'与 ' + (this.state.selected || '其他贝壳客服') + ' 聊天记录'}
+      <div className={classnames('dropdown', this.props.className, {'active': this.state.selected != ''})}
+           onClick={this.handleContainerClick}
+      >
+        <button className="dropdown-btn">
+          <span onClick={this.handleBtnClick}>
+            {'与 ' + (this.state.selected || '其他贝壳客服') + ' 聊天记录'}
+          </span>
           {
             this.state.selected && (
-              <i className="fa fa-lg fa-close" onClick={this.clear}></i>
+              <div className="close-wrap">
+                <i className="fa fa-lg fa-close" onClick={this.clear}></i>
+              </div>
             )
           }
         </button>

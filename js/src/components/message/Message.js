@@ -13,6 +13,14 @@ class Message extends Component {
   render() {
     let {from, msgType, dir, data, chatTime, pictureLoaded} = this.props
 
+    let headSrc = 'img/default.jpg'
+    if (from.indexOf('bkkf') != -1) {
+      headSrc = 'img/head/customer-service.png'
+    }
+    if (from.indexOf('zxys') != -1) {
+      headSrc = 'img/head/doctor.png'
+    }
+
     return (
       <div className={classnames('message', {'you': dir == DIR.LEFT}, {'me': dir == DIR.RIGHT})}>
         {
@@ -23,7 +31,7 @@ class Message extends Component {
           )
         }
         <Tooltip overlay={<span>{from}</span>}>
-          <img ref={c => this.img = c} className="avatar" src="img/default.jpg"/>
+          <img ref={c => this.img = c} className="avatar" src={headSrc}/>
         </Tooltip>
 
         <div className="content">

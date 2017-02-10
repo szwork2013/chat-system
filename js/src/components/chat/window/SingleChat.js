@@ -8,64 +8,42 @@ import {findDOMNode} from 'react-dom'
 import CurrentChatMessage from './single/CurrentChatMessage'
 import HistoryMessage from './single/HistoryMessage'
 import SendBox from '../SendBox'
-
-const SELF_HISTORY = 'SELF_HISTORY'
-const OTHER_CS_HISTORY = 'OTHER_CS_HISTORY'
+import busHelper from '../../../core/busHelper'
 
 class SingleChat extends Component {
-  constructor(props) {
-    super(props)
-    this.sendText = this.sendText.bind(this)
-    this.sendPicture = this.sendPicture.bind(this)
-    this.toggleHistoryMessage = this.toggleHistoryMessage.bind(this)
-    this.historyStack = []
-    this.state = {
-      showHistory: false,
-      showOtherCSHistory: false
-    }
+  state = {
+    showHistory: false,
+    showOtherCSHistory: false
   }
 
-  sendText(...args) {
+  sendText = (...args) => {
     this.props.sendText(...args)
     this._scrollToBottom()
   }
 
-  sendPicture(...args) {
+  sendPicture = (...args) => {
     this.props.sendPicture(...args)
     this._scrollToBottom()
   }
 
-  toggleHistoryMessage() {
-    this._refreshHistoryStack(!this.state.showHistory, SELF_HISTORY)
-    this.setState({showHistory: !this.state.showHistory})
+  toggleHistoryMessage = () => {
+    this.setState({showHistory: !this.state.showHistory, showOtherCSHistory: false}, this._fetchSelfHistory)
+  }
+
+  _fetchSelfHistory = () => {
+    if (this.state.showHistory) {
+      this.props.fetchHistoryMessage(this.props.to, this.props.curUserId)
+    }
   }
 
   openOtherCSHistory = (customerServiceId) => {
     this.customerServiceId = customerServiceId
-    this.props.fetchCSHistoryMessage(customerServiceId, this.props.curUserId)
-    this._refreshHistoryStack(true, OTHER_CS_HISTORY)
-    this.setState({showOtherCSHistory: true})
+    this.props.fetchHistoryMessage(customerServiceId, this.props.curUserId)
+    this.setState({showHistory: false, showOtherCSHistory: true})
   }
 
   closeCSHistoryMessageBox = () => {
-    this._refreshHistoryStack(false, OTHER_CS_HISTORY)
     this.setState({showOtherCSHistory: false})
-  }
-
-  // 判断历史消息和其他客服消息的上下顺序
-  _refreshHistoryStack(flag, historyType) {
-    if (flag) {
-      if (this.historyStack.indexOf(historyType) == -1) {
-        this.historyStack.push(historyType)
-      } else {
-        this.historyStack.splice(this.historyStack.indexOf(historyType), 1)
-        this.historyStack.push(historyType)
-      }
-    } else {
-      if (this.historyStack.indexOf(historyType) != -1) {
-        this.historyStack.splice(this.historyStack.indexOf(historyType), 1)
-      }
-    }
   }
 
   componentDidMount() {
@@ -88,6 +66,7 @@ class SingleChat extends Component {
     }
     //切换联系人时
     if (this._scrollBottomFlag) {
+      this._scrollBottomFlag = false
       this._scrollToBottom()
       return
     }
@@ -116,14 +95,13 @@ class SingleChat extends Component {
     }
 
     const _getTitle = () => {
-      if (this.historyStack.length == 0) {
-        return _getUserInfo(convertChat)
-      }
-      const historyType = this.historyStack[this.historyStack.length - 1]
-      if (historyType == SELF_HISTORY) {
+      if (this.state.showHistory) {
         return '与 ' + (convertChat.nickname || convertChat.id) + ' 的历史记录'
       }
-      return this.customerServiceId + ' 与 ' + (convertChat.nickname || convertChat.id) + ' 的历史记录'
+      if (this.state.showOtherCSHistory) {
+        return busHelper.getDisplayName(this.customerServiceId) + ' 与 ' + (convertChat.nickname || convertChat.id) + ' 的历史记录'
+      }
+      return _getUserInfo(convertChat)
     }
 
     return (
@@ -140,13 +118,9 @@ class SingleChat extends Component {
                             curUserId={this.props.curUserId}
                             ref={c => this._currentChatMessage = c}/>
 
-        <HistoryMessage show={this.state.showHistory}
+        <HistoryMessage show={this.state.showHistory || this.state.showOtherCSHistory}
                         curUserId={this.props.curUserId}
                         historyMessage={this.props.historyMessage}/>
-
-        <HistoryMessage show={this.state.showOtherCSHistory}
-                        curUserId={this.props.curUserId}
-                        historyMessage={this.props.csHistoryMessage}/>
 
         <SendBox curUserId={this.props.curUserId}
                  to={this.props.to}
@@ -154,6 +128,7 @@ class SingleChat extends Component {
                  sendPicture={this.sendPicture}
                  chatType={convertChat.chatType}
                  isShowHistory={this.state.showHistory}
+                 isShowCSHistory={this.state.showOtherCSHistory}
                  toggleHistoryMessage={this.toggleHistoryMessage}
                  openOtherCSHistory={this.openOtherCSHistory}
                  closeCSHistoryMessageBox={this.closeCSHistoryMessageBox}/>
@@ -173,8 +148,7 @@ SingleChat.propTypes = {
   to: PropTypes.string,
   message: PropTypes.any,
   historyMessage: PropTypes.array,
-  csHistoryMessage: PropTypes.array,
-  fetchCSHistoryMessage: PropTypes.func,
+  fetchHistoryMessage: PropTypes.func,
 }
 
 export default SingleChat

@@ -93,38 +93,31 @@ export let fetchDoctorListFromServer = dispatch => () => {
   })
 }
 
-export let startSingleChat = dispatch => (from, to, isSort) => {
-  dispatch({
-    type: actionConstants.chat.START_SINGLE_CHAT,
-    name: to, isSort
-  })
-  return new Promise((resolve, reject) => {
-    chatService.fetchHistoryMessage(from, to).then(result => {
-      dispatch({
-        type: actionConstants.message.FETCH_HISTORY_MESSAGE_SUCCESS,
-        historyMessages: result
-      })
-    }, err => {
-      reject(err)
+export function startSingleChat(from, to, isSort) {
+  return dispatch => {
+    dispatch({
+      type: actionConstants.chat.START_SINGLE_CHAT,
+      name: to, isSort
     })
-  })
+  }
 }
 
-export function fetchCSHistoryMessage(from, to) {
+export function fetchHistoryMessage(from, to) {
   function _fetchSuccess(result) {
     return {
-      type: actionConstants.message.FETCH_CS_HISTORY_MESSAGE_SUCCESS,
+      type: actionConstants.message.FETCH_HISTORY_MESSAGE_SUCCESS,
       historyMessages: result
     }
   }
 
   function _fetchFailure(err) {
     return {
-      type: actionConstants.message.FETCH_CS_HISTORY_MESSAGE_FAILURE, err
+      type: actionConstants.message.FETCH_HISTORY_MESSAGE_FAILURE, err
     }
   }
 
   return dispatch => {
+    dispatch({type: actionConstants.message.FETCH_HISTORY_MESSAGE_START})
     chatService.fetchHistoryMessage(from, to).then(result => dispatch(_fetchSuccess(result)), err => dispatch(_fetchFailure(err)))
   }
 }

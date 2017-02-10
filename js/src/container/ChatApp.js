@@ -53,7 +53,7 @@ class ChatApp extends Component {
   startChat(contactId, chatType) {
     this.setState({selectedChatId: contactId, currentTab: Tab.CHAT_TAB})
     if (chatType == ChatType.CHAT) {
-      this.props.startSingleChat(this.props.curUserId, contactId).then(null, err => notification.error({message: '提示', description: err}))
+      this.props.startSingleChat(this.props.curUserId, contactId)
     } else {
       this.props.startRoomChat(contactId)
     }
@@ -64,7 +64,6 @@ class ChatApp extends Component {
     if (chatType == ChatType.CHAT) {
       contactId = contact.name
       this.props.startSingleChat(this.props.curUserId, contactId, true)
-        .then(null, err => notification.error({message: '提示', description: err}))
     } else {
       contactId = contact.id
       this.props.startRoomChat(contactId, true)
@@ -87,7 +86,7 @@ class ChatApp extends Component {
     }
     let curUserId = this.props.curUserId
     this.props.fetchGroupListFromHuanXin()
-    if (curUserId.indexOf('bkkf') != -1 || curUserId.indexOf('bkzs') != -1) {
+    if (curUserId.indexOf('bkkf') != -1 || curUserId.indexOf('bkzs') != -1 || curUserId == 'test') {
       this.props.fetchPatientListFromServer().then(null, err => notification.error({message: '提示', description: err}))
       this.props.fetchDoctorListFromServer().then(null, err => notification.error({message: '提示', description: err}))
     } else if (curUserId.indexOf('zxys') != -1) {
@@ -191,13 +190,13 @@ function mapActionToProps(dispatch) {
     fetchGroupListFromHuanXin: actions.fetchGroupListFromHuanXin,
     newMessageHinted: actions.newMessageHinted,
 
+    startSingleChat: actions.startSingleChat,
     startRoomChat: actions.startRoomChat,
     handleCurrentChat: actions.handleCurrentChat,
     exitChatSystem: actions.exitChatSystem
   }, dispatch), {
     fetchPatientListFromServer: actions.fetchPatientListFromServer(dispatch),
-    fetchDoctorListFromServer: actions.fetchDoctorListFromServer(dispatch),
-    startSingleChat: actions.startSingleChat(dispatch)
+    fetchDoctorListFromServer: actions.fetchDoctorListFromServer(dispatch)
   })
 }
 

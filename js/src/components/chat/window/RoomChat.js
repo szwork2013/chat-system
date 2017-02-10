@@ -63,6 +63,7 @@ class RoomChat extends Component {
   componentDidUpdate() {
     //切换联系人时
     if (this._scrollBottomFlag) {
+      this._scrollBottomFlag = false
       this._scrollToBottom()
       return
     }
@@ -158,6 +159,7 @@ class RoomChat extends Component {
 
   //滚动到底部
   _scrollToBottom() {
+    console.log(1)
     if (!this._wrap) {
       return
     }

@@ -12,11 +12,6 @@ import Emoji from './toolbar/Emoji'
 import {ChatType} from '../../constants/ChatConstants'
 
 class SendBox extends Component {
-  constructor(props) {
-    super(props)
-    this.handlePreKeyDown = this.handlePreKeyDown.bind(this)
-  }
-
   sendText() {
     let {curUserId, to, chatType} = this.props
     let txt = this.preDom.innerHTML
@@ -42,7 +37,7 @@ class SendBox extends Component {
     return content
   }
 
-  handleFile(event) {
+  handleFile = event => {
     let {curUserId, chatType, to} = this.props
     this.props.sendPicture(curUserId, to, chatType, event.target)
   }
@@ -52,7 +47,7 @@ class SendBox extends Component {
     this.preDom.focus()
   }
 
-  handlePreKeyDown(event) {
+  handlePreKeyDown = event => {
     if (event.keyCode == 13) {
       if (!event.ctrlKey) {
         this.sendText()
@@ -70,14 +65,21 @@ class SendBox extends Component {
     events.on(this.preDom, 'keydown', this.handlePreKeyDown)
   }
 
+  componentDidUpdate() {
+    if (!this.props.isShowCSHistory) {
+      this._selectCsHistory.close()
+    }
+  }
+
   componentWillUnmount() {
     events.off(this.preDom, 'keydown', this.handlePreKeyDown)
   }
 
   render() {
-    const otherCSList = ['test0', 'test', 'test1', 'test2']
-    if (otherCSList.indexOf(this.props.curUserId) != -1) {
-      otherCSList.splice(otherCSList.indexOf(this.props.curUserId), 1)
+    const {curUserId} = this.props
+    const otherCSList = ['bkkf', 'bkkf1', 'bkkf2', 'bkkf3']
+    if (otherCSList.indexOf(curUserId) != -1) {
+      otherCSList.splice(otherCSList.indexOf(curUserId), 1)
     }
 
     return (
@@ -88,7 +90,7 @@ class SendBox extends Component {
             <div className="file_input_wrapper">
               <input type="file" name="file" accept="image/gif, image/jpeg, image/png" className="webuploader-element-invisible" multiple="multiple"
                      ref={c => this.fileInput = c}
-                     onChange={e => this.handleFile(e)}/>
+                     onChange={this.handleFile}/>
               <label className="input_label"></label>
             </div>
           </a>
@@ -103,8 +105,9 @@ class SendBox extends Component {
             )
           }
           {
-            this.props.curUserId.indexOf('test') != -1 && this.props.chatType == ChatType.CHAT && (
+            (curUserId.indexOf('bkkf') != -1 || curUserId.indexOf('test') != -1) && this.props.chatType == ChatType.CHAT && (
               <Dropdown className="other-bkkf-history"
+                        ref={c => this._selectCsHistory = c}
                         onChange={CSId => this.props.openOtherCSHistory(CSId)}
                         onClear={this.props.closeCSHistoryMessageBox}
               >
@@ -143,6 +146,7 @@ SendBox.propTypes = {
   sendText: PropTypes.func,
   sendPicture: PropTypes.func,
   isShowHistory: PropTypes.bool,
+  isShowCSHistory: PropTypes.bool,
   toggleHistoryMessage: PropTypes.func,
   openOtherCSHistory: PropTypes.func,
   closeCSHistoryMessageBox: PropTypes.func

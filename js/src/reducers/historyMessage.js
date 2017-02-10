@@ -14,8 +14,8 @@ export function historyMessage(state = [], action) {
     let nextIState = iState
     switch (action.type) {
 
-      case actionConstants.chat.START_SINGLE_CHAT:
-        nextIState = startSingleChat()
+      case actionConstants.message.FETCH_HISTORY_MESSAGE_START:
+        nextIState = fetchHistoryMessageStart()
         break
 
       case actionConstants.message.FETCH_HISTORY_MESSAGE_SUCCESS:
@@ -31,10 +31,9 @@ export function historyMessage(state = [], action) {
     return nextIState.toJS()
   }
 
-
   //---------------------------------------
 
-  function startSingleChat() {
+  function fetchHistoryMessageStart() {
     return fromJS([])
   }
 
