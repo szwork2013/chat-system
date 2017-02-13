@@ -1,4 +1,5 @@
 /**
+ * 这不是一个通用的dropdown
  * Created by jiangyukun on 2017/2/7.
  */
 import React, {Component, PropTypes} from 'react'

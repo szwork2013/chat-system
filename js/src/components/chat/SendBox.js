@@ -77,7 +77,7 @@ class SendBox extends Component {
 
   render() {
     const {curUserId} = this.props
-    const otherCSList = ['bkkf', 'bkkf1', 'bkkf2', 'bkkf3']
+    const otherCSList = ['bkkf', 'bkkf1', 'bkkf2']
     if (otherCSList.indexOf(curUserId) != -1) {
       otherCSList.splice(otherCSList.indexOf(curUserId), 1)
     }

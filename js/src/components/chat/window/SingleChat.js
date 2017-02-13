@@ -38,7 +38,7 @@ class SingleChat extends Component {
 
   openOtherCSHistory = (customerServiceId) => {
     this.customerServiceId = customerServiceId
-    this.props.fetchHistoryMessage(customerServiceId, this.props.curUserId)
+    this.props.fetchHistoryMessage(this.props.to, customerServiceId)
     this.setState({showHistory: false, showOtherCSHistory: true})
   }
 

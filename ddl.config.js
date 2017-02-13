@@ -18,7 +18,6 @@ const vendors = [
     "moment",
     "react",
     "react-addons-css-transition-group",
-    "react-bootstrap",
     "react-dom",
     "react-overlays",
     "react-redux",
