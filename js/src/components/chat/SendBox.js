@@ -66,7 +66,7 @@ class SendBox extends Component {
   }
 
   componentDidUpdate() {
-    if (!this.props.isShowCSHistory) {
+    if (!this.props.isShowCSHistory && this._selectCsHistory) {
       this._selectCsHistory.close()
     }
   }

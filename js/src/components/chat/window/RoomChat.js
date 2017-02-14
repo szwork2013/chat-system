@@ -159,7 +159,6 @@ class RoomChat extends Component {
 
   //滚动到底部
   _scrollToBottom() {
-    console.log(1)
     if (!this._wrap) {
       return
     }
